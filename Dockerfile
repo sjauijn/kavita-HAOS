@@ -16,6 +16,7 @@ RUN \
         curl \
         jq \
         tar \
+        openssl \
         ca-certificates \
         su-exec \
         shadow \
@@ -36,6 +37,17 @@ RUN \
     && cp /app/kavita/config/appsettings-init.json /defaults/appsettings-init.json \
     && rm -rf /app/kavita/config \
     && rm -rf /tmp/* /var/cache/apk/*
+
+# Install bashio (not included by default in ghcr.io/home-assistant/*-base)
+ARG BASHIO_VERSION="0.16.2"
+RUN \
+    curl -J -L -o /tmp/bashio.tar.gz \
+        "https://github.com/hassio-addons/bashio/archive/v${BASHIO_VERSION}.tar.gz" \
+    && mkdir /tmp/bashio \
+    && tar zxvf /tmp/bashio.tar.gz --strip-components=1 -C /tmp/bashio \
+    && mv /tmp/bashio/lib /usr/lib/bashio \
+    && ln -s /usr/lib/bashio/bashio /usr/bin/bashio \
+    && rm -rf /tmp/bashio /tmp/bashio.tar.gz
 
 # Add rootfs (s6 services)
 COPY rootfs/ /
@@ -67,7 +79,7 @@ LABEL \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
     org.opencontainers.image.vendor="sjauijn" \
     org.opencontainers.image.authors="sjauijn" \
-    org.opencontainers.image.url="https://github.com/sjauijn/immich-tiktok-remover-HAOS" \
+    org.opencontainers.image.url="https://github.com/sjauijn/kavita-HAOS" \
     org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.revision=${BUILD_REF} \
