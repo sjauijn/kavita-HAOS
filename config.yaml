@@ -2,8 +2,7 @@ name: "Kavita"
 description: "Self-hosted digital library server for EPUB, PDF, CBZ/CBR comics and manga"
 version: "1.0.0"
 slug: "kavita"
-url: "https://github.com/alexbelgium/hassio-addons"
-image: ghcr.io/alexbelgium/kavita-{arch}
+url: "https://github.com/sjauijn/kavita-HAOS"
 arch:
   - aarch64
   - amd64
