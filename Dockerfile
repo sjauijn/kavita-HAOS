@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:7.6.1
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
 # set version label
@@ -59,7 +59,7 @@ LABEL \
     io.hass.arch="${BUILD_ARCH}" \
     io.hass.type="addon" \
     io.hass.version=${BUILD_VERSION} \
-    maintainer="you" \
+    maintainer="sjauijn" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
