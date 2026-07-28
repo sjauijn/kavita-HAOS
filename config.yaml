@@ -2,7 +2,7 @@ name: "Kavita"
 description: "Fast, feature rich, cross platform reading server for Comics, Manga, Books, and more."
 version: "0.8.7"
 slug: "kavita"
-url: "https://github.com/Kareadita/Kavita"
+url: "https://github.com/sjauijn/kavita-HAOS"
 init: false
 apparmor: true
 startup: application
