@@ -1,0 +1,18 @@
+configuration:
+  data_location:
+    name: Расположение данных
+    description: Путь, где хранится ваша библиотека (книги, комиксы, манга). По умолчанию /share/kavita.
+  TZ:
+    name: Часовой пояс
+    description: Часовой пояс, используемый Kavita (например, Europe/Paris).
+  ssl:
+    name: Включить SSL
+    description: Обслуживать Kavita по HTTPS, используя certfile/keyfile ниже (из папки /ssl Home Assistant).
+  certfile:
+    name: Файл сертификата
+    description: Имя файла сертификата внутри папки /ssl Home Assistant.
+  keyfile:
+    name: Файл ключа
+    description: Имя файла приватного ключа внутри папки /ssl Home Assistant.
+network:
+  5000/tcp: Веб-интерфейс Kavita

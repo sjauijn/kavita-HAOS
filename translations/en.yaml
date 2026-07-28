@@ -1,0 +1,18 @@
+configuration:
+  data_location:
+    name: Data location
+    description: Path where your library (books, comics, manga) is stored. Default is /share/kavita.
+  TZ:
+    name: Timezone
+    description: Timezone used by Kavita (e.g. Europe/Paris).
+  ssl:
+    name: Enable SSL
+    description: Serve Kavita over HTTPS using the certfile/keyfile below (from the Home Assistant /ssl folder).
+  certfile:
+    name: Certificate file
+    description: Filename of the certificate inside the Home Assistant /ssl folder.
+  keyfile:
+    name: Key file
+    description: Filename of the private key inside the Home Assistant /ssl folder.
+network:
+  5000/tcp: Kavita web UI

@@ -1,0 +1,82 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+set -e
+
+CONFIG_DIR="/config"
+DATA_LOCATION="$(bashio::config 'data_location')"
+TZ_VALUE="$(bashio::config 'TZ')"
+SSL_ENABLED="$(bashio::config 'ssl')"
+CERTFILE="$(bashio::config 'certfile')"
+KEYFILE="$(bashio::config 'keyfile')"
+
+export TZ="${TZ_VALUE:-Europe/Paris}"
+
+bashio::log.info "Starting Kavita configuration (data_location=${DATA_LOCATION} TZ=${TZ} ssl=${SSL_ENABLED})"
+
+# Seed appsettings.json on first run
+if [[ ! -f "${CONFIG_DIR}/appsettings.json" ]]; then
+    bashio::log.info "No existing appsettings.json found, seeding defaults"
+    cp /defaults/appsettings-init.json "${CONFIG_DIR}/appsettings.json"
+fi
+
+# Make sure the data/library location the user configured actually exists,
+# so first-time library setup in Kavita's wizard has somewhere to point to.
+mkdir -p "${DATA_LOCATION}"
+
+# Kavita expects its config directory at /app/kavita/config
+rm -rf /app/kavita/config
+ln -s "${CONFIG_DIR}" /app/kavita/config
+
+# --- Build the port / bind address / SSL section of appsettings.json ---
+TMP_SETTINGS="$(mktemp)"
+
+if bashio::config.true 'ssl'; then
+    CERT_PATH="/ssl/${CERTFILE}"
+    KEY_PATH="/ssl/${KEYFILE}"
+
+    if [[ ! -f "${CERT_PATH}" ]] || [[ ! -f "${KEY_PATH}" ]]; then
+        bashio::log.warning "SSL enabled but certfile/keyfile not found in /ssl (${CERTFILE} / ${KEYFILE}). Falling back to plain HTTP."
+        jq \
+            '.Port = 5000 | .IpAddresses = "0.0.0.0"' \
+            "${CONFIG_DIR}/appsettings.json" > "${TMP_SETTINGS}"
+    else
+        # Kavita (Kestrel/.NET) needs a PFX/PKCS12 certificate bundle rather than
+        # separate PEM cert/key files, so we combine them on every start in case
+        # the certificate was renewed since the last boot.
+        PFX_PATH="${CONFIG_DIR}/.ha-ssl.pfx"
+        PFX_PASSWORD="homeassistant"
+
+        openssl pkcs12 -export \
+            -out "${PFX_PATH}" \
+            -inkey "${KEY_PATH}" \
+            -in "${CERT_PATH}" \
+            -passout "pass:${PFX_PASSWORD}"
+
+        jq \
+            --arg certpath "${PFX_PATH}" \
+            --arg certpass "${PFX_PASSWORD}" \
+            '.Port = 5000
+             | .IpAddresses = "0.0.0.0"
+             | .Kestrel.Endpoints.Https.Url = "https://0.0.0.0:5000"
+             | .Kestrel.Endpoints.Https.Certificate.Path = $certpath
+             | .Kestrel.Endpoints.Https.Certificate.Password = $certpass' \
+            "${CONFIG_DIR}/appsettings.json" > "${TMP_SETTINGS}"
+
+        bashio::log.info "SSL enabled, Kavita will serve HTTPS on port 5000"
+    fi
+else
+    jq \
+        '.Port = 5000 | .IpAddresses = "0.0.0.0"' \
+        "${CONFIG_DIR}/appsettings.json" > "${TMP_SETTINGS}"
+fi
+
+mv "${TMP_SETTINGS}" "${CONFIG_DIR}/appsettings.json"
+
+# Permissions: Kavita container runs as root inside HAOS by convention (PUID/PGID
+# handled by supervisor mapping for share/media), so just make sure the config
+# dir and wwwroot index are writable.
+chown -R root:root "${CONFIG_DIR}" 2>/dev/null || true
+chmod -R u+rwX "${CONFIG_DIR}" 2>/dev/null || true
+
+bashio::log.info "Kavita configuration complete"
