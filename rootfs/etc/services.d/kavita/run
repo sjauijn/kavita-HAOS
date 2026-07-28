@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Starts the Kavita server
+# ==============================================================================
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Load environment prepared in cont-init.d (ASPNETCORE_URLS, cert paths, TZ, ...)
+if [[ -f /etc/kavita/env ]]; then
+    set -o allexport
+    # shellcheck disable=SC1091
+    source /etc/kavita/env
+    set +o allexport
+fi
+
+bashio::log.info "Starting Kavita..."
+
+cd /app/kavita
+exec ./Kavita
