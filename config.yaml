@@ -1,0 +1,33 @@
+name: "Kavita"
+description: "Self-hosted digital library server for EPUB, PDF, comics and manga"
+version: "1.0.0"
+slug: "kavita"
+url: "https://github.com/YOUR_GITHUB_USER/ha-addon-kavita"
+init: false
+apparmor: true
+startup: services
+boot: auto
+arch:
+  - amd64
+  - aarch64
+ports:
+  5000/tcp: 5000
+ports_description:
+  5000/tcp: "Kavita web UI"
+webui: "http://[HOST]:[PORT:5000]"
+map:
+  - type: share
+    path: books
+    read_only: true
+  - type: media
+    read_only: true
+  - type: addon_config
+    read_only: false
+options:
+  puid: 1000
+  pgid: 1000
+  tz: "Etc/UTC"
+schema:
+  puid: "int"
+  pgid: "int"
+  tz: "str"
