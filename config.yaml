@@ -22,7 +22,7 @@ map:
 options:
   puid: 1000
   pgid: 1000
-  tz: "Etc/UTC"
+  tz: Europe/Paris
   data_location: /share/kavita
 schema:
   puid: "int"
