@@ -2,7 +2,7 @@ name: "Kavita"
 description: "Self-hosted digital library server for EPUB, PDF, comics and manga"
 version: "1.0.0"
 slug: "kavita"
-url: "https://github.com/YOUR_GITHUB_USER/ha-addon-kavita"
+url: "https://github.com/sjauijn/kavita-HAOS/"
 init: false
 apparmor: true
 startup: services
