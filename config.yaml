@@ -16,17 +16,14 @@ ports_description:
   5000/tcp: "Kavita web UI"
 webui: "http://[HOST]:[PORT:5000]"
 map:
-  - type: share
-    path: books
-    read_only: true
-  - type: media
-    read_only: true
-  - type: addon_config
-    read_only: false
+  - share:rw
+  - media:rw
+  - addon_config:rw
 options:
   puid: 1000
   pgid: 1000
   tz: "Etc/UTC"
+  data_location: /share/kavita
 schema:
   puid: "int"
   pgid: "int"
