@@ -15,11 +15,11 @@ reading server for Comics, Manga, Books and more.
 
 ```yaml
 data_location: /share/kavita
-port: 5000
 ssl: false
 certfile: fullchain.pem
 keyfile: privkey.pem
 tz: Europe/Paris
+log_level: Information
 ```
 
 ### Option: `data_location`
@@ -44,17 +44,6 @@ path.
 > under `/share/...` or `/media/...` as well, since those are the only
 > folders mapped into the container.
 
-### Option: `port`
-
-The port the Kavita web server listens on inside the add-on container
-(default `5000`).
-
-If you change this value, you should also update the container-port mapping
-on the add-on's **Network** tab to match, so Home Assistant forwards
-requests to the correct internal port. The host-side port (the one you
-actually browse to) can always be changed freely from the Network tab
-without touching this option.
-
 ### Option: `ssl`
 
 Set to `true` to serve the Kavita web interface over HTTPS, using a
@@ -77,6 +66,20 @@ Timezone used by Kavita for scheduling and displayed timestamps, e.g.
 `Europe/Paris`, `America/New_York`. Must be a valid
 [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
+### Option: `log_level`
+
+Minimum log level for Kavita's own log output. One of `Fatal`, `Error`,
+`Warning`, `Information`, `Debug`, `Verbose`.
+
+## Web port
+
+The add-on always exposes the Kavita web interface on container port
+`5000` (see the **Network** tab to change the host-side port if needed).
+This is fixed and cannot be changed via an option, because Kavita itself
+does not reliably honor the standard `ASPNETCORE_URLS` environment
+variable for changing its listening port — see
+[Kareadita/Kavita#4436](https://github.com/Kareadita/Kavita/issues/4436).
+
 ## First run
 
 On first start, Kavita seeds a fresh configuration in `data_location`. Open
@@ -85,12 +88,14 @@ account and add libraries.
 
 ## Notes on SSL
 
-Kavita's own in-app HTTP/HTTPS settings are ignored while running inside a
-container (this is a known behavior of Kavita, not a limitation of this
-add-on). Instead, this add-on configures HTTPS directly at the web-server
-(Kestrel) level via environment variables, so the `ssl`/`certfile`/`keyfile`
-options above are the correct — and only — way to enable HTTPS for this
-add-on.
+Kavita does not support serving HTTPS natively — this is a known limitation
+of Kavita itself (see
+[Kareadita/Kavita discussion #3480](https://github.com/Kareadita/Kavita/discussions/3480)),
+not a limitation of this add-on. When `ssl: true` is set, this add-on runs a
+small internal `nginx` instance that terminates TLS on port `5000` using
+your certificate/key from `/ssl`, and forwards plain HTTP traffic to Kavita
+on an internal-only port. This is the same approach used by Home Assistant's
+own official "NGINX SSL Proxy" add-on.
 
 ## Support
 

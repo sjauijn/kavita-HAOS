@@ -4,7 +4,7 @@ version: "0.9.0.2-ls120"
 slug: "kavita"
 url: "https://github.com/sjauijn/kavita-HAOS"
 init: false
-apparmor: false
+apparmor: true
 startup: services
 boot: auto
 arch:
