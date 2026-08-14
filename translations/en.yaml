@@ -14,5 +14,8 @@ configuration:
   keyfile:
     name: Key file
     description: Filename of the private key inside /ssl (used when SSL is enabled)
+  log_level:
+    name: Log level
+    description: Minimum log level for Kavita (Fatal, Error, Warning, Information, Debug, Verbose)
 network:
   5000/tcp: Kavita web interface

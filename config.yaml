@@ -30,9 +30,11 @@ options:
   ssl: false
   certfile: "fullchain.pem"
   keyfile: "privkey.pem"
+  log_level: "Information"
 schema:
   data_location: "str"
   tz: "str"
   ssl: "bool"
   certfile: "str"
   keyfile: "str"
+  log_level: "list(Fatal|Error|Warning|Information|Debug|Verbose)"

@@ -12,6 +12,7 @@ RUN \
     tar \
     ca-certificates \
     openssl \
+    nginx \
   && \
   mkdir -p /app/kavita && \
   if [ -z "${KAVITA_RELEASE}" ]; then \

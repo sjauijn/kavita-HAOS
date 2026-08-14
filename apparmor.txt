@@ -34,6 +34,13 @@ profile kavita flags=(attach_disconnected,mediate_deleted) {
   /etc/localtime rw,
   /etc/timezone rw,
 
+  # nginx TLS termination
+  /usr/sbin/nginx rix,
+  /etc/nginx/** rw,
+  /var/log/nginx/** rw,
+  /var/lib/nginx/** rw,
+  /run/nginx.pid rw,
+
   # Access to mapped volumes specified in config.yaml
   /share/** rw,
   /media/** rw,
