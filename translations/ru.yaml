@@ -1,28 +1,19 @@
 configuration:
   data_location:
     name: Расположение данных
-    description: >-
-      Путь, где Kavita хранит базу библиотеки, конфигурацию, кеш и обложки.
-      По умолчанию /share/kavita. Можно указать любой смонтированный путь,
-      например /media/MegaCloud/kavita.
+    description: Путь, где Kavita будет хранить конфигурацию, базу данных и библиотеку
   port:
     name: Порт веб-интерфейса
-    description: >-
-      Порт, на котором Kavita слушает внутри аддона. При изменении также
-      обновите проброс порта на вкладке "Сеть", чтобы он совпадал.
-  ssl:
-    name: Включить SSL
-    description: >-
-      Раздавать веб-интерфейс Kavita по HTTPS, используя сертификат из
-      папки /ssl Home Assistant.
-  certfile:
-    name: Файл сертификата
-    description: Имя файла сертификата (цепочки) в /ssl, например fullchain.pem.
-  keyfile:
-    name: Файл ключа
-    description: Имя файла приватного ключа в /ssl, например privkey.pem.
+    description: Порт, на котором будет доступен веб-интерфейс Kavita
   tz:
     name: Часовой пояс
-    description: Часовой пояс для Kavita, например Europe/Paris.
-network:
-  5000/tcp: Веб-интерфейс Kavita
+    description: Часовой пояс для Kavita (например, Europe/Paris)
+  ssl:
+    name: Включить SSL
+    description: Включить HTTPS для веб-интерфейса Kavita, используя certfile/keyfile из /ssl
+  certfile:
+    name: Файл сертификата
+    description: Имя файла сертификата внутри /ssl (используется при включённом SSL)
+  keyfile:
+    name: Файл ключа
+    description: Имя файла приватного ключа внутри /ssl (используется при включённом SSL)
