@@ -42,6 +42,9 @@ if bashio::var.true "${SSL}"; then
     mkdir -p /tmp/nginx/logs
     mkdir -p /tmp/nginx/tmp/client_body
     mkdir -p /tmp/nginx/tmp/proxy
+    mkdir -p /tmp/nginx/tmp/fastcgi
+    mkdir -p /tmp/nginx/tmp/uwsgi
+    mkdir -p /tmp/nginx/tmp/scgi
     mkdir -p /tmp/nginx/conf
 
     cat > /tmp/nginx/conf/nginx.conf << NGINXCONF
@@ -60,6 +63,9 @@ http {
     default_type application/octet-stream;
     client_body_temp_path /tmp/nginx/tmp/client_body;
     proxy_temp_path /tmp/nginx/tmp/proxy;
+    fastcgi_temp_path /tmp/nginx/tmp/fastcgi;
+    uwsgi_temp_path /tmp/nginx/tmp/uwsgi;
+    scgi_temp_path /tmp/nginx/tmp/scgi;
     access_log /tmp/nginx/logs/access.log;
 
     map \$http_upgrade \$connection_upgrade {
