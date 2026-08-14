@@ -9,7 +9,6 @@ startup: services
 boot: auto
 arch:
   - amd64
-  - aarch64
 map:
   - type: data
     read_only: false

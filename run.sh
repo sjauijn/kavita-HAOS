@@ -101,12 +101,12 @@ http {
 }
 NGINXCONF
 
-    if ! nginx -c /tmp/nginx/conf/nginx.conf -t; then
+    if ! nginx -c /tmp/nginx/conf/nginx.conf -e /tmp/nginx/logs/error.log -t; then
       bashio::log.error "nginx configuration test failed, falling back to HTTP"
       SSL_ACTIVE=false
       KAVITA_PORT="${PORT}"
     else
-      nginx -c /tmp/nginx/conf/nginx.conf &
+      nginx -c /tmp/nginx/conf/nginx.conf -e /tmp/nginx/logs/error.log &
       NGINX_PID=$!
 
       sleep 1
