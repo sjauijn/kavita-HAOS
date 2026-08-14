@@ -71,13 +71,11 @@ Timezone used by Kavita for scheduling and displayed timestamps, e.g.
 
 ## First run
 
+On first start, Kavita seeds a fresh configuration in `data_location`. Open
+the web UI and follow Kavita's own setup wizard to create the initial admin
+account and add libraries.
+
 ## Big thanks to:
 [@Kareadita](https://github.com/Kareadita/Kavita) for awesome work
 
 [@linuxserver](https://github.com/linuxserver/docker-kavita) for docker container
-
-
-
-On first start, Kavita seeds a fresh configuration in `data_location`. Open
-the web UI and follow Kavita's own setup wizard to create the initial admin
-account and add libraries.
