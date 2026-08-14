@@ -3,5 +3,5 @@
 ## v0.9.0.2-ls120
 
 - Initial release of the Kavita Home Assistant app.
-- fully merged with [latest release](https://github.com/linuxserver/docker-kavita/releases/tag/v0.9.0.2-ls120) 0.9.0.2-ls120 of docker container.
+- fully merged with [latest release](https://github.com/linuxserver/docker-kavita/releases/tag/v0.9.0.2-ls120) of Kavita docker container.
 - Optional `ssl` support using `/ssl/certfile` and `/ssl/keyfile`.
