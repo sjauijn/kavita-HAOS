@@ -19,7 +19,6 @@ ssl: false
 certfile: fullchain.pem
 keyfile: privkey.pem
 tz: Europe/Paris
-log_level: Information
 ```
 
 ### Option: `data_location`
@@ -65,11 +64,6 @@ keyfile: privkey.pem
 Timezone used by Kavita for scheduling and displayed timestamps, e.g.
 `Europe/Paris`, `America/New_York`. Must be a valid
 [IANA timezone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-
-### Option: `log_level`
-
-Minimum log level for Kavita's own log output. One of `Fatal`, `Error`,
-`Warning`, `Information`, `Debug`, `Verbose`.
 
 ## Web port
 

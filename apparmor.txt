@@ -36,7 +36,7 @@ profile kavita flags=(attach_disconnected,mediate_deleted) {
 
   # nginx TLS termination
   /usr/sbin/nginx rix,
-  /etc/nginx/** rw,
+  /etc/nginx/** r,
   /var/log/nginx/** rw,
   /var/lib/nginx/** rw,
   /run/nginx.pid rw,

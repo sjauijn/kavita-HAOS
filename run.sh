@@ -7,7 +7,6 @@ TZ_VALUE="$(bashio::config 'tz')"
 SSL="$(bashio::config 'ssl')"
 CERTFILE="$(bashio::config 'certfile')"
 KEYFILE="$(bashio::config 'keyfile')"
-LOG_LEVEL="$(bashio::config 'log_level')"
 
 export TZ="${TZ_VALUE}"
 
@@ -20,11 +19,6 @@ if [ ! -f "${DATA_LOCATION}/config/appsettings.json" ]; then
     || cp -n /defaults/appsettings-init.json "${DATA_LOCATION}/config/appsettings.json"
 fi
 
-jq --arg level "${LOG_LEVEL}" \
-  '(.Serilog //= {}) | (.Serilog.MinimumLevel //= {}) | .Serilog.MinimumLevel.Default = $level' \
-  "${DATA_LOCATION}/config/appsettings.json" > /tmp/appsettings.json \
-  && mv /tmp/appsettings.json "${DATA_LOCATION}/config/appsettings.json"
-
 rm -rf /app/kavita/config
 ln -sfn "${DATA_LOCATION}/config" /app/kavita/config
 
@@ -34,8 +28,11 @@ if bashio::var.true "${SSL}"; then
   CERT_PATH="/ssl/${CERTFILE}"
   KEY_PATH="/ssl/${KEYFILE}"
 
-  if [ ! -f "${CERT_PATH}" ] || [ ! -f "${KEY_PATH}" ]; then
-    bashio::log.warning "SSL enabled but ${CERT_PATH} or ${KEY_PATH} not found, falling back to HTTP"
+  if [ ! -f "${CERT_PATH}" ]; then
+    bashio::log.warning "SSL enabled but certificate file ${CERT_PATH} was not found, falling back to HTTP"
+    KAVITA_PORT="${PORT}"
+  elif [ ! -f "${KEY_PATH}" ]; then
+    bashio::log.warning "SSL enabled but key file ${KEY_PATH} was not found, falling back to HTTP"
     KAVITA_PORT="${PORT}"
   else
     bashio::log.info "Enabling HTTPS termination with nginx using ${CERT_PATH}"
@@ -51,12 +48,16 @@ if bashio::var.true "${SSL}"; then
 pid /tmp/nginx/nginx.pid;
 error_log /tmp/nginx/logs/error.log warn;
 worker_processes 1;
+daemon off;
+user root;
 
 events {
     worker_connections 1024;
 }
 
 http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
     client_body_temp_path /tmp/nginx/tmp/client_body;
     proxy_temp_path /tmp/nginx/tmp/proxy;
     access_log /tmp/nginx/logs/access.log;
@@ -94,15 +95,30 @@ http {
 }
 NGINXCONF
 
-    nginx -c /tmp/nginx/conf/nginx.conf -t
-    nginx -c /tmp/nginx/conf/nginx.conf
+    if ! nginx -c /tmp/nginx/conf/nginx.conf -t; then
+      bashio::log.error "nginx configuration test failed, falling back to HTTP"
+      SSL_ACTIVE=false
+      KAVITA_PORT="${PORT}"
+    else
+      nginx -c /tmp/nginx/conf/nginx.conf &
+      NGINX_PID=$!
 
-    cleanup() {
-      if [ -f /tmp/nginx/nginx.pid ]; then
-        kill "$(cat /tmp/nginx/nginx.pid)" 2>/dev/null
+      sleep 1
+
+      if ! kill -0 "${NGINX_PID}" 2>/dev/null; then
+        bashio::log.error "nginx failed to start, see below, falling back to HTTP"
+        cat /tmp/nginx/logs/error.log 2>/dev/null
+        SSL_ACTIVE=false
+        KAVITA_PORT="${PORT}"
       fi
-    }
-    trap cleanup EXIT TERM INT
+
+      cleanup() {
+        if [ -n "${NGINX_PID}" ] && kill -0 "${NGINX_PID}" 2>/dev/null; then
+          kill "${NGINX_PID}" 2>/dev/null
+        fi
+      }
+      trap cleanup EXIT TERM INT
+    fi
   fi
 else
   KAVITA_PORT="${PORT}"
@@ -115,7 +131,7 @@ if [ "${CURRENT_PORT}" != "${KAVITA_PORT}" ]; then
     && mv /tmp/appsettings.json "${DATA_LOCATION}/config/appsettings.json"
 fi
 
-bashio::log.info "Starting Kavita, data at ${DATA_LOCATION}, port ${KAVITA_PORT}, TZ ${TZ_VALUE}, log level ${LOG_LEVEL}"
+bashio::log.info "Starting Kavita, data at ${DATA_LOCATION}, port ${KAVITA_PORT}, TZ ${TZ_VALUE}"
 
 cd /app/kavita || exit 1
 
