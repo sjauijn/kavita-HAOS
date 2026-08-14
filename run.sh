@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bashio
 
 DATA_LOCATION="$(bashio::config 'data_location')"
-PORT="$(bashio::config 'port')"
+PORT=5000
 TZ_VALUE="$(bashio::config 'tz')"
 SSL="$(bashio::config 'ssl')"
 CERTFILE="$(bashio::config 'certfile')"
@@ -49,13 +49,14 @@ if bashio::var.true "${SSL}"; then
 
     export ASPNETCORE_Kestrel__Certificates__Default__Path="${PFX_PATH}"
     export ASPNETCORE_Kestrel__Certificates__Default__Password="${PFX_PASSWORD}"
+    export ASPNETCORE_Kestrel__EndpointDefaults__Protocols="Http1AndHttp2"
     SCHEME="https"
   fi
 fi
 
 export ASPNETCORE_URLS="${SCHEME}://0.0.0.0:${PORT}"
 
-bashio::log.info "Starting Kavita, data at ${DATA_LOCATION}, port ${PORT}, TZ ${TZ_VALUE}"
+bashio::log.info "Starting Kavita, data at ${DATA_LOCATION}, port ${PORT}, TZ ${TZ_VALUE}, scheme ${SCHEME}"
 
 cd /app/kavita || exit 1
 

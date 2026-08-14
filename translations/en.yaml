@@ -2,9 +2,6 @@ configuration:
   data_location:
     name: Data location
     description: Path where Kavita will store its config, database and library data
-  port:
-    name: Web port
-    description: Port the Kavita web interface will listen on
   tz:
     name: Timezone
     description: Timezone used by Kavita (e.g. Europe/Paris)
@@ -17,3 +14,5 @@ configuration:
   keyfile:
     name: Key file
     description: Filename of the private key inside /ssl (used when SSL is enabled)
+network:
+  5000/tcp: Kavita web interface

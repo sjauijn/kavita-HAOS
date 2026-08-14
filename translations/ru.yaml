@@ -2,9 +2,6 @@ configuration:
   data_location:
     name: Расположение данных
     description: Путь, где Kavita будет хранить конфигурацию, базу данных и библиотеку
-  port:
-    name: Порт веб-интерфейса
-    description: Порт, на котором будет доступен веб-интерфейс Kavita
   tz:
     name: Часовой пояс
     description: Часовой пояс для Kavita (например, Europe/Paris)
@@ -17,3 +14,5 @@ configuration:
   keyfile:
     name: Файл ключа
     description: Имя файла приватного ключа внутри /ssl (используется при включённом SSL)
+network:
+  5000/tcp: Веб-интерфейс Kavita
