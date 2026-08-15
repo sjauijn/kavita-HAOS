@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/sjauijn/kavita-HAOS/refs/heads/main/icon.png" alt="icon">
 </p>
 
-# Kavita - Home Assistant app
+# Kavita — Home Assistant app
 
 I maintain this app, along with my other Home Assistant apps, solely for my own use. As long as I'm actively using them myself, I'll continue developing and updating them; otherwise, support for apps I no longer need will be discontinued.
 
