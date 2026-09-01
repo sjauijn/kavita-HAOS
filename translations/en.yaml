@@ -1,0 +1,18 @@
+configuration:
+  data_location:
+    name: Data location
+    description: Path where Kavita will store its config, database and library data
+  tz:
+    name: Timezone
+    description: Timezone used by Kavita (e.g. Europe/Paris)
+  ssl:
+    name: Enable SSL
+    description: Enable HTTPS on the Kavita web interface using certfile/keyfile from /ssl
+  certfile:
+    name: Certificate file
+    description: Filename of the certificate inside /ssl (used when SSL is enabled)
+  keyfile:
+    name: Key file
+    description: Filename of the private key inside /ssl (used when SSL is enabled)
+network:
+  5000/tcp: Kavita web interface
