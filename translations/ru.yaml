@@ -1,0 +1,18 @@
+configuration:
+  data_location:
+    name: Расположение данных
+    description: Путь, где Kavita будет хранить конфигурацию, базу данных и библиотеку
+  tz:
+    name: Часовой пояс
+    description: Часовой пояс для Kavita (например, Europe/Paris)
+  ssl:
+    name: Включить SSL
+    description: Включить HTTPS для веб-интерфейса Kavita, используя certfile/keyfile из /ssl
+  certfile:
+    name: Файл сертификата
+    description: Имя файла сертификата внутри /ssl (используется при включённом SSL)
+  keyfile:
+    name: Файл ключа
+    description: Имя файла приватного ключа внутри /ssl (используется при включённом SSL)
+network:
+  5000/tcp: Веб-интерфейс Kavita
